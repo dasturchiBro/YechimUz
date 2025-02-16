@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="ftco-section ftco-category ftco-no-pt mt-5 form_inputs">
+    <style type="text/css">
+
+.form_inputs input {
+  font-family: inherit;
+  font-size: inherit;
+  background-color: #f4f2f2;
+  border: none;
+  color: #646464;
+  padding: 0.4rem 1rem;
+  border-radius: 30px;
+  width: 12em;
+  transition: all ease-in-out .5s;
+  margin-right: 10px;
+}
+
+.form_inputs input:hover, .form_inputs input:focus {
+  box-shadow: 0 0 1em #00000013;
+}
+
+.form_inputs input:focus {
+  outline: none;
+  background-color: #f0eeee;
+}
+
+.form_inputs input::-webkit-input-placeholder {
+  font-weight: 100;
+  color: #ccc;
+}
+
+.form_inputs form > div {
+    width: 100%;
+}
+
+
+    </style>
+    <div class="container">
+        <h2 class="text-center">Sign Up</h2>
+        <form method="post">
+             {% csrf_token %}
+    
+            {{ form.as_p }}
+
+            {% if form.errors %}
+                <ul>
+                    {% for field, errors in form.errors.items %}
+                        <li style="color: red;">Warning: {{ errors.0 }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %} 
+            <div class="d-flex justify-content-center"><button type="submit" class="btn btn-success">Sign Up</button></div>
+        </form>
+        <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+    </div>
+</section>
+{% endblock %}

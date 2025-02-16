@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% load static %}
+    <div class="hero-wrap hero-bread" style="background-image: url('{% static "images/bg_1.jpg" %}');">
+      <div class="container">
+        <div class="row no-gutters slider-text align-items-center justify-content-center">
+          <div class="col-md-9 ftco-animate text-center">
+            <!-- <p class="breadcrumbs"><span class="mr-2"><a href="{% static 'index.html' %}">Home</a></span> <span>Contact us</span></p> -->
+            <h1 class="mb-0 bread">Contact us</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="ftco-section contact-section bg-light">
+      <div class="container">
+        <div class="row d-flex mb-5 contact-info">
+          <div class="w-100"></div>
+          <div class="col-md-4 d-flex">
+            <div class="info bg-white p-4">
+              <p><span>Manzil:</span> Namangan Viloyati, Pop Tumani</p>
+            </div>
+          </div>
+          <div class="col-md-4 d-flex">
+            <div class="info bg-white p-4">
+              <p><span>Phone:</span> <a href="tel://+998949988538">+998 94 9988 538</a></p>
+            </div>
+          </div>
+          <div class="col-md-4 d-flex">
+            <div class="info bg-white p-4">
+              <p><span>Email:</span> <a href="mailto:info@yoursite.com">fayozbek.online@gmail.com</a></p>
+            </div>
+          </div>
+         <!--  <div class="col-md-3 d-flex">
+            <div class="info bg-white p-4">
+              <p><span>Website:</span> <a href="#"></a></p>
+            </div>
+          </div> -->
+        </div>
+        <div class="row block-9">
+          <div class="col-md-6 order-md-last d-flex">
+            <form action="#" class="bg-white p-5 contact-form">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Ism">
+              </div>
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Email">
+              </div>
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Mavzu">
+              </div>
+              <div class="form-group">
+                <textarea name="" id="" cols="30" rows="7" class="form-control" placeholder="Xabar"></textarea>
+              </div>
+              <div class="form-group">
+                <input type="submit" value="Jo'natish" class="btn btn-primary py-3 px-5">
+              </div>
+            </form>
+          </div>
+          <div class="col-md-6 d-flex">
+            <div id="map" class="bg-white"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="ftco-footer ftco-section">
+      <div class="container">
+        <div class="row">
+          <div class="mouse">
+            <a href="#" class="mouse-icon">
+              <div class="mouse-wheel"><span class="ion-ios-arrow-up"></span></div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+            <script>
+                // Initialize Map (set default location)
+                var map = L.map('map').setView([39.6507963, 66.9653502], 13); // Default to Namangan
+
+                // Add OpenStreetMap tiles
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors'
+                }).addTo(map);
+
+                // Create a marker (but don't add it until location is set)
+                var marker = L.marker([39.6507963, 66.9653502]).addTo(map);
+
+                function showNearbyFood(lat, lon) {
+                    fetch(`/api/nearby_food/?lat=${lat}&lon=${lon}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            data.food.forEach(food => {
+                                let popupContent = `<b>${food.name}</b><br>${food.description}<br>
+                                                    Price: $${food.price} <br>
+                                                    ${food.discount_price ? "Discount: $" + food.discount_price : ""}`;
+                                L.marker([food.latitude, food.longitude])
+                                    .addTo(map)
+                                    .bindPopup(popupContent);
+                            });
+                        })
+                        .catch(error => console.error('Error fetching food data:', error));
+                }
+
+                function searchLocation() {
+                    let city = document.getElementById('city-input').value;
+                    if (!city) {
+                        alert("Ma'lumot topilmadi!");
+                        return;
+                    }
+
+                    let url = `https://nominatim.openstreetmap.org/search?format=json&q=${city}`;
+
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.length === 0) {
+                                alert("Ma'lumot topilmadi!");
+                                return;
+                            }
+
+                            let lat = parseFloat(data[0].lat);
+                            let lon = parseFloat(data[0].lon);
+
+                            map.setView([lat, lon], 12);
+                            marker.setLatLng([lat, lon]).bindPopup("Selected Location").openPopup();
+
+                            // alert(`Location set to: ${city} (Lat: ${lat}, Lon: ${lon})`);
+
+                            showNearbyFood(lat, lon); // Fetch nearby food
+                        })
+                        .catch(error => console.error('Error:', error));
+                }
+            </script>
+{% endblock %}

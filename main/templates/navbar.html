@@ -1,0 +1,64 @@
+<div class="py-1 bg-primary">
+    <div class="container">
+        <div class="row no-gutters d-flex align-items-start align-items-center px-md-0">
+            <div class="col-lg-12 d-block">
+                <div class="row d-flex">
+                    <div class="col-md pr-4 d-flex topper align-items-center">
+                        <div class="icon mr-2 d-flex justify-content-center align-items-center"><span class="icon-phone2"></span></div>
+                        <span class="text">+998 94 9988 538</span>
+                    </div>
+                    <div class="col-md pr-4 d-flex topper align-items-center">
+                        <div class="icon mr-2 d-flex justify-content-center align-items-center"><span class="icon-paper-plane"></span></div>
+                        <span class="text">fayozbek.online@gmail.com</span>
+                    </div>
+                    <div class="col-md-5 pr-4 d-flex topper align-items-center text-lg-right">
+                        <span class="text">Telegram: @YechimUz_blog</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <!-- <img src="./images/logo.png" id="logo_png" alt="YechimUZ Logo">  -->
+            YechimUz</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="oi oi-menu"></span> Menu
+        </button>
+
+        <div class="collapse navbar-collapse" id="ftco-nav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item {% if request.path == '/' %} active {% endif %}"><a href="{% url 'home' %}" class="nav-link">Asosiy</a></li>
+                <!-- <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Shop</a>
+              <div class="dropdown-menu" aria-labelledby="dropdown04">
+              	<a class="dropdown-item" href="shop.html">Shop</a>
+              	<a class="dropdown-item" href="wishlist.html">Wishlist</a>
+                <a class="dropdown-item" href="product-single.html">Single Product</a>
+                <a class="dropdown-item" href="cart.html">Cart</a>
+                <a class="dropdown-item" href="checkout.html">Checkout</a>
+              </div>
+            </li> -->
+                <li class="nav-item"><a href="{% url 'about' %}" class="nav-link {% if request.path == '/about' %} active {% endif %}">Biz Haqimizda</a></li>
+                <li class="nav-item"><a href="{% url 'blog' %}" class="nav-link {% if request.path == '/blog' %} active {% endif %}">Blog</a></li>
+                <li class="nav-item"><a href="{% url 'contact' %}" class="nav-link {% if request.path == '/contact' %} active {% endif %}">Bog'lanish</a></li>
+                <!-- SINGING -->
+                {% if user.is_authenticated %}
+                <li class="nav-item"><a href="{% url 'logout' %}" class="nav-link signupin btn-warning">Chiqish</a></li>
+                <li class="nav-item"><a href="{% url 'dashboard' %}" class="nav-link signupin btn-info">Boshqaruv Paneli</a></li>
+	            {% else %}
+	                <li class="nav-item"><a href="{% url 'login' %}" class="nav-link signupin btn-info {% if request.path == '/login' %} active {% endif %}">Kirish <span class="icon-user header-icon-01"></span></a></li>
+	                <li class="nav-item">
+	                	<a href="{% url 'signup' %}" class="nav-link signupin btn-success">Ro'yhatdan o'tish <span class="icon-user-plus header-icon-01"></span></a>
+	                </li>
+                {% endif %}
+                <!-- SINGNING END -->
+                <!-- <li class="nav-item cta cta-colored"><a href="cart.html" class="nav-link"><span class="icon-shopping_cart"></span>[0]</a></li> -->
+
+            </ul>
+        </div>
+    </div>
+</nav>
+<!-- END nav -->

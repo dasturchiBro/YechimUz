@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="ftco-section ftco-category ftco-no-pt mt-5 form_inputs">
+    <style type="text/css">
+
+.form_inputs input {
+  font-family: inherit;
+  font-size: inherit;
+  background-color: #f4f2f2;
+  border: none;
+  color: #646464;
+  padding: 0.4rem 1rem;
+  border-radius: 30px;
+  width: 12em;
+  transition: all ease-in-out .5s;
+  margin-right: 10px;
+}
+
+.form_inputs input:hover, .form_inputs input:focus {
+  box-shadow: 0 0 1em #00000013;
+}
+
+.form_inputs input:focus {
+  outline: none;
+  background-color: #f0eeee;
+}
+
+.form_inputs input::-webkit-input-placeholder {
+  font-weight: 100;
+  color: #ccc;
+}
+
+.form_inputs form > div {
+    width: 100%;
+}
+
+.errorlist > li {
+    color: red;
+}
+
+
+    </style>
+    <div class="container">
+        <h2  class="text-center">Login</h2>
+        <form method="post" class="w-100 d-flex flex-column">
+                {% csrf_token %}
+                
+                {{ form.as_p }}
+
+                <!-- {% if form.errors %}
+                    <ul>
+                        {% for field, errors in form.errors.items %}
+                            <li style="color: red;">{{ errors.0 }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %} -->
+
+
+            <button type="submit" class="btn btn-info w-25  ">Login</button>
+        </form>
+        <p>Don't have an account? <a href="{% url 'signup' %}">Sign Up</a></p>
+    </div>
+</section>
+{% endblock %}

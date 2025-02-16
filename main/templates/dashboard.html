@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if user_type == "business" %}
+        <style>
+            .business_inputs input {
+              border-radius: 15px;
+            }   
+
+            .business_inputs label {
+                color: black;
+                font-weight: 400;
+                font-size: 20px;
+            }      
+        </style>
+        <div class="container px-5">
+            <h2 class="text-center py-5 my-5">Tashkilot Boshqaruv Paneli.</h2 class="text-center py-5 my-5">
+
+            <div id="search-container" class="my-4 ">
+                <div class="mb-3 business_inputs">
+                    <label for="exampleInputEmail1" class="form-label color-dark">Mahsulotni kiriting:</label>
+                    <input type="text" class="form-control my-3 " placeholder="Mahsulot nomi: "  id="">
+                    <input type="text" class="form-control my-3 " placeholder="Mahsulot turi: "  id="">
+                    <input type="text" class="form-control my-3 " placeholder="Mahsulot narxi: "  id="">
+                    <input type="text" class="form-control my-3 " placeholder="Mahsulot joylashuvi: "   id="city-input">
+                </div>
+                <button onclick="searchLocation()" class="btn btn-info">Saqlash</button>
+            </div>
+
+            <div id="map" style="height: 300p;"></div>
+
+            <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+            <script>
+                // Initialize Map (set default location)
+                var map = L.map('map').setView([39.6507963, 66.9653502], 13); // Default to Namangan
+
+                // Add OpenStreetMap tiles
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors'
+                }).addTo(map);
+
+                // Create a marker (but don't add it until location is set)
+                var marker = L.marker([39.6507963, 66.9653502]).addTo(map);
+
+                function showNearbyFood(lat, lon) {
+                    fetch(`/api/nearby_food/?lat=${lat}&lon=${lon}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            data.food.forEach(food => {
+                                let popupContent = `<b>${food.name}</b><br>${food.description}<br>
+                                                    Price: $${food.price} <br>
+                                                    ${food.discount_price ? "Discount: $" + food.discount_price : ""}`;
+                                L.marker([food.latitude, food.longitude])
+                                    .addTo(map)
+                                    .bindPopup(popupContent);
+                            });
+                        })
+                        .catch(error => console.error('Error fetching food data:', error));
+                }
+
+                function searchLocation() {
+                    let city = document.getElementById('city-input').value;
+                    if (!city) {
+                        alert("Ma'lumot topilmadi!");
+                        return;
+                    }
+
+                    let url = `https://nominatim.openstreetmap.org/search?format=json&q=${city}`;
+
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.length === 0) {
+                                alert("Ma'lumot topilmadi!");
+                                return;
+                            }
+
+                            let lat = parseFloat(data[0].lat);
+                            let lon = parseFloat(data[0].lon);
+
+                            map.setView([lat, lon], 12);
+                            marker.setLatLng([lat, lon]).bindPopup("Selected Location").openPopup();
+
+                            // alert(`Location set to: ${city} (Lat: ${lat}, Lon: ${lon})`);
+
+                            showNearbyFood(lat, lon); // Fetch nearby food
+                        })
+                        .catch(error => console.error('Error:', error));
+                }
+            </script>
+        </div>
+    {% else %}
+        <div class="contianer px-5">
+            <h2 class="text-center py-5 my-5">Foydalanuvchi Boshqaruv Paneli.</h2 class="text-center py-5 my-5">
+
+            <div class="info-box">
+                <p><strong>Sizning joylashuvingiz:</strong> <span id="user-location">Aniqlanmoqda...</span></p>
+            </div>
+
+            <div id="search-container" class="my-4" style="width: 300px;">
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Joylashuvni kiriting:</label>
+                    <input type="text" class="form-control"  id="city-input">
+                </div>
+                <button onclick="searchLocation()" class="btn btn-info">Joylashuvni belgilash</button>
+            </div>
+
+            <div id="map" style="height: 300p;"></div>
+
+            <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+            <script>
+                // Initialize Map (set default location)
+                var map = L.map('map').setView([39.6507963, 66.9653502], 13); // Default to Namangan
+
+                // Add OpenStreetMap tiles
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors'
+                }).addTo(map);
+
+                // Create a marker (but don't add it until location is set)
+                var marker = L.marker([39.6507963, 66.9653502]).addTo(map);
+
+                function showNearbyFood(lat, lon) {
+                    fetch(`/api/nearby_food/?lat=${lat}&lon=${lon}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            data.food.forEach(food => {
+                                let popupContent = `<b>${food.name}</b><br>${food.description}<br>
+                                                    Price: $${food.price} <br>
+                                                    ${food.discount_price ? "Discount: $" + food.discount_price : ""}`;
+                                L.marker([food.latitude, food.longitude])
+                                    .addTo(map)
+                                    .bindPopup(popupContent);
+                            });
+                        })
+                        .catch(error => console.error('Error fetching food data:', error));
+                }
+
+                function searchLocation() {
+                    let city = document.getElementById('city-input').value;
+                    if (!city) {
+                        alert("Ma'lumot topilmadi!");
+                        return;
+                    }
+
+                    let url = `https://nominatim.openstreetmap.org/search?format=json&q=${city}`;
+
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.length === 0) {
+                                alert("Ma'lumot topilmadi!");
+                                return;
+                            }
+
+                            let lat = parseFloat(data[0].lat);
+                            let lon = parseFloat(data[0].lon);
+
+                            map.setView([lat, lon], 12);
+                            marker.setLatLng([lat, lon]).bindPopup("Selected Location").openPopup();
+
+                            // alert(`Location set to: ${city} (Lat: ${lat}, Lon: ${lon})`);
+
+                            showNearbyFood(lat, lon); // Fetch nearby food
+                        })
+                        .catch(error => console.error('Error:', error));
+                }
+            </script>
+        </div>
+    {% endif %}
+
+    <!-- <a href="{% url 'logout' %}">Logout</a> -->
+{% endblock %}
+    
